@@ -15,10 +15,17 @@ public class Lec02KeyValueObjectTest extends BaseTest {
     public void keyValueObjectTest(){
         Student student = new Student("marshal", 10, "atlanta", Arrays.asList(1,2, 3));
         RBucketReactive<Student> bucket = this.client.getBucket("student:1", new TypedJsonJacksonCodec(Student.class));
+
+        
         Mono<Void> set = bucket.set(student);
+
+
+
         Mono<Void> get = bucket.get()
                 .doOnNext(System.out::println)
                 .then();
+
+        //set.concatWith(get) --> is like it first executes the set and then executes the get.
         StepVerifier.create(set.concatWith(get))
                 .verifyComplete();
     }
